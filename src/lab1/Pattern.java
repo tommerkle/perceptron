@@ -10,7 +10,7 @@ import lab1.io.*;
 public class Pattern {
 
     StringList list = new StringList();
-    int yes;
+   
     int test;
 
     Pattern(String absolutepath) {
