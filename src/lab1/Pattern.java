@@ -11,6 +11,7 @@ public class Pattern {
 
     StringList list = new StringList();
     int yes;
+    int test;
 
     Pattern(String absolutepath) {
         MyReader mr = new MyReader(absolutepath);
