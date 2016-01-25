@@ -10,8 +10,8 @@ import lab1.io.*;
 public class Pattern {
 
     StringList list = new StringList();
-   
-    int test;
+    int yes;
+    
 
     Pattern(String absolutepath) {
         MyReader mr = new MyReader(absolutepath);
