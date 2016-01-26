@@ -1,7 +1,7 @@
-package lab1;
+package perceptron;
 
+import perceptron.io.MyReader;
 import java.util.ArrayList;
-import lab1.io.*;
 
 /**
  *

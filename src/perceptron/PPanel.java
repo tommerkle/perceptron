@@ -3,15 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package lab1;
+package perceptron;
 
+import perceptron.io.MyWriter;
+import perceptron.io.MyReader;
 import java.awt.Color;
 import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.Frame;
 import java.io.File;
 import javax.swing.JTextArea;
-import lab1.io.*;
 
 /**
  *

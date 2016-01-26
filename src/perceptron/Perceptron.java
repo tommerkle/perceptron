@@ -1,11 +1,11 @@
 
-package lab1;
+package perceptron;
 
 /**
  *
  * @author Tom
  */
-public class Lab1 {
+public class Perceptron {
 
     /**
      * @param args the command line arguments

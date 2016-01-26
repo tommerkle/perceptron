@@ -1,4 +1,4 @@
-package lab1;
+package perceptron;
 
 import java.util.ArrayList;
 

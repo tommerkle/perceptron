@@ -1,5 +1,5 @@
 
-package lab1;
+package perceptron;
 
 /**
  *
