@@ -1,8 +1,9 @@
 package perceptron;
 
-
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -15,7 +16,6 @@ public class Ptron {
     int eta = 1;
     int[][] detectors;
     int[][] weights;
-
     ArrayList<Integer> trainingList;
     ArrayList<Integer> pTronOutput;
     PatternList patterns;
@@ -23,8 +23,9 @@ public class Ptron {
     int threshold = 200;
     boolean DEBUG = false;
     boolean errors = true;
-    int patternNo; // Number of the pattern we are currently looping through 0 to 29 i.e. 30 patterns
-    
+    int patternNo = 0; // Number of the pattern we are currently looping through 0 to 29 i.e. 30 patterns
+    int[][] selectedPatternWeights;
+
     Ptron() {
 
     }
@@ -39,19 +40,22 @@ public class Ptron {
         weights = new int[x][x];
         this.trainingList = patterns.getTraininglist();
         pTronOutput = new ArrayList<>();
-        
+
     }
 
-    void run()  {
+    void run() {
         int count = 1;
         while (errors) {
-            
+            try {
+                Thread.sleep(100);
+            } catch (Exception ex) {
+                
+            }
             count++;
             errors = false;
             pTronOutput.clear();
-            
-            for (int i = 0; i < patterns.size(); i ++) { // for each pattern
-                patternNo = i;
+
+            for (int i = 0; i < patterns.size(); i++) { // for each pattern
                 initDetectors(patterns.get(i));
                 int output = categorize(patterns.get(i));
 
@@ -60,12 +64,11 @@ public class Ptron {
                     learn(patterns.get(i), output);
 
                 }
-                pTronOutput.add(output);
-                //System.out.println("output= " + output);
-                System.out.println("patternNo = " + patternNo);
-                displayPattern(patterns.get(i));
-                //new PauseDialog();
                 
+                pTronOutput.add(output);
+                //displayPattern(patterns.get(i));
+
+                //new PauseDialog();
             }
 
         }
@@ -192,7 +195,7 @@ public class Ptron {
 
         for (int i = 0; i < patternSize; i++) {
             panel.setTheTA("        ");
-            
+
             for (int j = 0; j < patternSize; j++) {
 
                 panel.setTheTA(" " + weights[i][j]);
@@ -202,5 +205,13 @@ public class Ptron {
 
         }
         panel.setTACarat(0);
+    }
+
+    public Integer getCurrentPattern() {
+        return patternNo;
+    }
+    
+    void setCurrentPattern(int x){
+        patternNo = x;
     }
 }
