@@ -40,7 +40,7 @@ public class Ptron {
         pTronOutput = new ArrayList<>();
     }
 
-    void run() throws InterruptedException {
+    void run()  {
         int count = 1;
         while (errors) {
             System.out.println("run through number: " + count);
