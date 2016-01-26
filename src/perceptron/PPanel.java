@@ -24,6 +24,7 @@ public class PPanel extends javax.swing.JPanel {
     static final boolean DEBUG = false;
     PatternList patterns;
     Ptron tron;
+    PFrame theFrame;
     Controller theController;
 
     /**
@@ -31,13 +32,24 @@ public class PPanel extends javax.swing.JPanel {
      */
     public PPanel() {
         initComponents();
-        theController = new Controller(this);
-        theController.start();
+
     }
-    
-    public void paintComponent(Graphics g){
+
+    public PPanel(PFrame frame) {
+        this();
+        theFrame = frame;
+        initFile();
+        initComboBox();
+        theController = new Controller(this);
+        
+        //theController.start();
+
+    }
+
+    public void paintComponent(Graphics g) {
         theController.paint(g);
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -61,14 +73,17 @@ public class PPanel extends javax.swing.JPanel {
         jMenuBar4 = new javax.swing.JMenuBar();
         jMenu7 = new javax.swing.JMenu();
         jMenu8 = new javax.swing.JMenu();
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
         openButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         theTA = new javax.swing.JTextArea();
-        echoButton = new javax.swing.JButton();
         runButton = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         outputTA = new javax.swing.JTextArea();
+        loadButton = new javax.swing.JButton();
+        patternComboBox = new javax.swing.JComboBox();
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -117,13 +132,6 @@ public class PPanel extends javax.swing.JPanel {
         theTA.setRows(5);
         jScrollPane2.setViewportView(theTA);
 
-        echoButton.setText("Echo");
-        echoButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                echoButtonActionPerformed(evt);
-            }
-        });
-
         runButton.setText("Ptron Run");
         runButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -135,42 +143,63 @@ public class PPanel extends javax.swing.JPanel {
         outputTA.setRows(5);
         jScrollPane3.setViewportView(outputTA);
 
+        loadButton.setText("Load");
+        loadButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadButtonActionPerformed(evt);
+            }
+        });
+
+        patternComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        patternComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                patternComboBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(382, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(55, 55, 55)
+                        .addComponent(patternComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(39, 39, 39))
+            .addGroup(layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(openButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(saveButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(echoButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(loadButton)
+                .addGap(18, 18, 18)
                 .addComponent(runButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(53, 53, 53))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(382, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(39, 39, 39))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(openButton)
-                    .addComponent(saveButton)
-                    .addComponent(echoButton)
-                    .addComponent(runButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(openButton)
+                            .addComponent(saveButton)
+                            .addComponent(runButton)
+                            .addComponent(loadButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(35, 35, 35))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(patternComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(84, Short.MAX_VALUE))
         );
@@ -190,32 +219,21 @@ public class PPanel extends javax.swing.JPanel {
         mw.close();
     }//GEN-LAST:event_saveButtonActionPerformed
 
-    private void echoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_echoButtonActionPerformed
-
-        theTA.setText(""); // Clear the TA before every time a file is echoed into the TA
-        try {
-            File file = new File(getDirectoryName());
-            System.out.println("file = " + file);
-            inputData(file);
-            String path = file.toString();//Put the Data from a selected file into the PatternList "patterns"
-            tron = new Ptron(this, path);
-
-        } catch (Exception e) {
-            System.out.println("Error: " + e);
-        }
-       
-        
-        tron.displayPattern(patterns.get(0)); //displays the first pattern
-        
-        
-        
-    }//GEN-LAST:event_echoButtonActionPerformed
-
     private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runButtonActionPerformed
         tron.run();
-        
-       
+        //theController.start();
     }//GEN-LAST:event_runButtonActionPerformed
+
+    private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
+       initFile();
+       theController = new Controller(this);
+       repaint();
+    }//GEN-LAST:event_loadButtonActionPerformed
+
+    private void patternComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_patternComboBoxActionPerformed
+        tron.setCurrentPattern(patternComboBox.getSelectedIndex());
+        theFrame.repaint();
+    }//GEN-LAST:event_patternComboBoxActionPerformed
 
     public PatternList getPatterns() {
         return patterns;
@@ -274,7 +292,8 @@ public class PPanel extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton echoButton;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -291,8 +310,10 @@ public class PPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JButton loadButton;
     private javax.swing.JButton openButton;
     private javax.swing.JTextArea outputTA;
+    private javax.swing.JComboBox patternComboBox;
     private javax.swing.JButton runButton;
     private javax.swing.JButton saveButton;
     private javax.swing.JTextArea theTA;
@@ -324,6 +345,38 @@ public class PPanel extends javax.swing.JPanel {
 
     void clearTheTA() {
         theTA.setText("");
+    }
+
+    void step() {
+        theFrame.repaint();
+    }
+
+    private void initFile() {
+        theTA.setText("");
+        outputTA.setText(""); // Clear the TAs before every time a file is echoed into the TA
+        try {
+            File file = new File(getDirectoryName());
+            if(!file.canExecute()){
+                System.exit(0);
+            }
+            System.out.println("file = " + file.canExecute());
+            inputData(file);
+            String path = file.toString();//Put the Data from a selected file into the PatternList "patterns"
+            tron = new Ptron(this, path);
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
+    }
+
+    private void initComboBox() {
+        int count = 1;
+        patternComboBox.removeAllItems();
+        for(Pattern p: patterns){
+           patternComboBox.addItem("Pattern " + count);
+           count++;
+        }
+        
     }
 
 }
