@@ -5,6 +5,7 @@
  */
 package perceptron;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 /**
@@ -13,14 +14,21 @@ import java.awt.Graphics;
  */
 public class Controller extends Thread {
 
-    private boolean running = false;
     private final PPanel thePanel;
-    
+    private boolean running = false;
     private boolean DEBUGGING = true;
-    
+    Ptron tron;
+    int delay = 30;
+
+    int patternX = 75, patternY = 100, weightsX = 75, weightsY = 350, boxSize = 10;
+
+    PatternList patterns;
+    public int patternDim = 20;
+
     Controller(PPanel panel) {
         thePanel = panel;
-        
+        patterns = thePanel.getPatterns();
+        tron = thePanel.getTron();
 
     }
 
@@ -35,19 +43,17 @@ public class Controller extends Thread {
     }
 
     void paint(Graphics g) {
-
-
+        initPatternGrid(g);
+        initWeightsGrid(g);
     }
 
     public void step() {
-        
-
-
+        thePanel.step();
     }
 
     private void delay() {
         try {
-            this.sleep(30);
+            this.sleep(delay);
         } catch (Exception ex) {
 
         }
@@ -57,11 +63,44 @@ public class Controller extends Thread {
         running = !running;
     }
 
-   void stopit(){
+    void stopit() {
         running = false;
     }
-   
-   void startit(){
-       running = true;
-   }
+
+    void startit() {
+        running = true;
+    }
+
+    void initPatternGrid(Graphics g) {
+        int patternNo = thePanel.tron.getCurrentPattern();
+
+        for (int row = 0; row < patternDim; row++) {
+            for (int col = 0; col < patternDim; col++) {
+                if (patterns.get(patternNo).getList().get(row).charAt(col) != '*') {
+                    g.setColor(Color.white);
+                }
+                g.fillRect(patternX + col * boxSize, patternY + row * boxSize, boxSize, boxSize);
+                g.setColor(Color.BLACK);
+            }
+        }
+    }
+
+    private void initWeightsGrid(Graphics g) {
+        for (int row = 0; row < patternDim; row++) {
+            for (int col = 0; col < patternDim; col++) {
+                if (tron.weights[row][col] < 0) {
+                    
+                    g.setColor(Color.red);
+                } else if (tron.weights[row][col] > 0) {
+                    g.setColor(Color.GREEN);
+                    
+                } else {
+                    g.setColor(Color.BLUE);
+                }
+
+                g.fillRect(weightsX + col * boxSize, weightsY + row * boxSize, boxSize, boxSize);
+
+            }
+        }
+    }
 }

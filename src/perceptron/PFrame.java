@@ -13,7 +13,7 @@ public class PFrame extends javax.swing.JFrame {
     public PFrame() {
         initComponents();
         setSize(800,800);
-        add(new PPanel());
+        add(new PPanel(this));
         setVisible(true);
     }
 

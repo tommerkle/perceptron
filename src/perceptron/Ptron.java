@@ -46,11 +46,7 @@ public class Ptron {
     void run() {
         int count = 1;
         while (errors) {
-            try {
-                Thread.sleep(100);
-            } catch (Exception ex) {
-                
-            }
+
             count++;
             errors = false;
             pTronOutput.clear();
