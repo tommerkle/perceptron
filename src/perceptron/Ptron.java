@@ -23,7 +23,8 @@ public class Ptron {
     int threshold = 200;
     boolean DEBUG = false;
     boolean errors = true;
-
+    int patternNo; // Number of the pattern we are currently looping through 0 to 29 i.e. 30 patterns
+    
     Ptron() {
 
     }
@@ -38,33 +39,32 @@ public class Ptron {
         weights = new int[x][x];
         this.trainingList = patterns.getTraininglist();
         pTronOutput = new ArrayList<>();
+        
     }
 
     void run()  {
         int count = 1;
         while (errors) {
-            System.out.println("run through number: " + count);
+            
             count++;
             errors = false;
             pTronOutput.clear();
+            
+            for (int i = 0; i < patterns.size(); i ++) { // for each pattern
+                patternNo = i;
+                initDetectors(patterns.get(i));
+                int output = categorize(patterns.get(i));
 
-            for (Pattern p : patterns) {
-                
-                initDetectors(p);
-                int output = categorize(p);
-                if (DEBUG) {
-                    System.out.println("output= " + output);
-                }
-                if (output != p.getYes()) {
+                if (output != patterns.get(i).getYes()) {
                     errors = true;
-                    learn(p, output);
+                    learn(patterns.get(i), output);
 
                 }
                 pTronOutput.add(output);
-                System.out.println("output= " + output);
-                
-                displayPattern(p);
-                new PauseDialog();
+                //System.out.println("output= " + output);
+                System.out.println("patternNo = " + patternNo);
+                displayPattern(patterns.get(i));
+                //new PauseDialog();
                 
             }
 
@@ -75,7 +75,7 @@ public class Ptron {
         System.out.println("trueCategory= " + trainingList.toString());
         panel.setTheOutputTA("\n\ntrueCategory= " + trainingList.toString());
 
-        System.out.println("pTron Output= " + pTronOutput.toString());
+        System.out.println("pTron Final Output= " + pTronOutput.toString());
         panel.setTheOutputTA("\npTron Output= " + pTronOutput.toString());
 
         System.out.println("Time through = " + count);
@@ -93,7 +93,7 @@ public class Ptron {
                     detectors[i][j] = 1;
                 }
                 //panel.setTheTA("" + detectors[i][j]);
-                System.out.print(detectors[i][j]);
+                //System.out.print(detectors[i][j]);
             }
             //panel.setTheTA("\n");
             //System.out.println("\n");

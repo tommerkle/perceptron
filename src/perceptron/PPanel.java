@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.io.File;
 import javax.swing.JTextArea;
 
@@ -23,14 +24,20 @@ public class PPanel extends javax.swing.JPanel {
     static final boolean DEBUG = false;
     PatternList patterns;
     Ptron tron;
+    Controller theController;
 
     /**
      * Creates new form PPanel
      */
     public PPanel() {
         initComponents();
+        theController = new Controller(this);
+        theController.start();
     }
-
+    
+    public void paintComponent(Graphics g){
+        theController.paint(g);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -137,17 +144,20 @@ public class PPanel extends javax.swing.JPanel {
                 .addComponent(openButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(saveButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 417, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(echoButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(runButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(53, 53, 53))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(382, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,10 +169,10 @@ public class PPanel extends javax.swing.JPanel {
                     .addComponent(echoButton)
                     .addComponent(runButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 624, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(111, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(35, 35, 35)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(84, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -193,15 +203,18 @@ public class PPanel extends javax.swing.JPanel {
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
-        //tron.displayPatterns(patterns); // original
+       
         
-        tron.displayPattern(patterns.get(0));
+        tron.displayPattern(patterns.get(0)); //displays the first pattern
+        
+        
+        
     }//GEN-LAST:event_echoButtonActionPerformed
 
     private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runButtonActionPerformed
         tron.run();
-
-        System.out.println("FINISHED");
+        
+       
     }//GEN-LAST:event_runButtonActionPerformed
 
     public PatternList getPatterns() {
@@ -248,7 +261,7 @@ public class PPanel extends javax.swing.JPanel {
     private String getDirectoryName() {
         System.setProperty("apple.awt.fileDialogForDirectories", "true"); // added so that when the FileDialog opens, you may select directories
         FileDialog fd = new FileDialog(new Frame(), "Select Input File");
-        fd.setDirectory("/Users/Tom/Desktop/Machine Learning/Lab1/ptronData");
+        fd.setDirectory("/Users/Tom/Desktop/Machine Learning/Perceptron/ptronData");
 
         fd.setVisible(true);
         System.out.println(fd.getDirectory());
