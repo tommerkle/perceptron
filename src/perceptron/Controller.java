@@ -86,16 +86,17 @@ public class Controller extends Thread {
     }
 
     private void initWeightsGrid(Graphics g) {
-        
+
         for (int row = 0; row < patternDim; row++) {
             for (int col = 0; col < patternDim; col++) {
+                int dist = Math.abs(tron.weights[row][col]);
+
                 if (tron.weights[row][col] < 0) {
-                    
-                    g.setColor(Color.red);
+                    g.setColor(Color.RED);
                 } else if (tron.weights[row][col] > 0) {
                     g.setColor(Color.GREEN);
-                    
                 } else {
+
                     g.setColor(Color.BLUE);
                 }
 
@@ -104,4 +105,7 @@ public class Controller extends Thread {
             }
         }
     }
+
+
+
 }
