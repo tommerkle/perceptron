@@ -86,6 +86,7 @@ public class Controller extends Thread {
     }
 
     private void initWeightsGrid(Graphics g) {
+        
         for (int row = 0; row < patternDim; row++) {
             for (int col = 0; col < patternDim; col++) {
                 if (tron.weights[row][col] < 0) {

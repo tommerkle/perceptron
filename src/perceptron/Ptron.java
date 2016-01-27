@@ -25,6 +25,7 @@ public class Ptron {
     boolean errors = true;
     int patternNo = 0; // Number of the pattern we are currently looping through 0 to 29 i.e. 30 patterns
     int[][] selectedPatternWeights;
+    ArrayList<Integer> wrongList;
 
     Ptron() {
 
@@ -44,10 +45,14 @@ public class Ptron {
     }
 
     void run() {
-        int count = 1;
+        int count = 0;
+        int right;
+        int wrong;
         while (errors) {
-
-            count++;
+            right = 0;
+            wrong = 0;
+            wrongList = new ArrayList<>();
+            count ++;
             errors = false;
             pTronOutput.clear();
 
@@ -56,9 +61,13 @@ public class Ptron {
                 int output = categorize(patterns.get(i));
 
                 if (output != patterns.get(i).getYes()) {
+                    wrong ++;
+                    wrongList.add(i+1);
                     errors = true;
                     learn(patterns.get(i), output);
 
+                } else{
+                    right ++;
                 }
                 
                 pTronOutput.add(output);
@@ -66,10 +75,13 @@ public class Ptron {
 
                 //new PauseDialog();
             }
-
+            System.out.println("Run through " + count + " has identified: " + right + " correct, and " + wrong + " incorrect");
+            System.out.println("Incorrectly identified patterns: " + wrongList );
+            panel.setTheTA("\n\nRun through " + count + " has identified: " + right + " correct, and " + wrong + " incorrect");
+            panel.setTheTA("\nIncorrectly identified patterns: " + wrongList );
         }
         System.out.println("FINISHED");
-        panel.setTheOutputTA("FINISHED");
+        panel.setTheOutputTA("\nFINISHED");
 
         System.out.println("trueCategory= " + trainingList.toString());
         panel.setTheOutputTA("\n\ntrueCategory= " + trainingList.toString());
