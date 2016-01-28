@@ -239,6 +239,7 @@ public class PPanel extends javax.swing.JPanel {
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
        initFile();
        theController = new Controller(this);
+       initComboBox();
        repaint();
     }//GEN-LAST:event_loadButtonActionPerformed
 
