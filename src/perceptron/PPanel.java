@@ -35,6 +35,8 @@ public class PPanel extends javax.swing.JPanel {
     int drawingDim = 20;
     int[][] drawingGrid;
     int dgBoxWidth = 16;
+    int dgYes = 0;
+    Pattern drawingPattern;
 
     /**
      * Creates new form PPanel
@@ -48,6 +50,7 @@ public class PPanel extends javax.swing.JPanel {
         this();
         theFrame = frame;
         drawingGrid = new int[drawingDim][drawingDim];
+        drawingPattern = new Pattern(this, dgYes);
         initFile();
         initComboBox();
         theController = new Controller(this);
@@ -188,6 +191,11 @@ public class PPanel extends javax.swing.JPanel {
         });
 
         yesCheckBox.setText("Yes");
+        yesCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                yesCheckBoxActionPerformed(evt);
+            }
+        });
 
         clearButton.setText("Clear");
         clearButton.addActionListener(new java.awt.event.ActionListener() {
@@ -297,7 +305,12 @@ public class PPanel extends javax.swing.JPanel {
         int x = evt.getX();
         int y = evt.getY();
         if (x > dX && x < dX + dGridWidth && y > dY && y < dY + dGridWidth) {
-            draw(x, y); // add a 1 to the (x,y)th cell of the drawing grid
+                    int col = (x - dX) / dgBoxWidth;
+
+        int row = (y - dY) / dgBoxWidth;
+
+        drawingGrid[row][col] = Math.abs(drawingGrid[row][col]-1);
+             // add a 1 to the (x,y)th cell of the drawing grid
         }
         repaint();
     }//GEN-LAST:event_formMousePressed
@@ -314,8 +327,14 @@ public class PPanel extends javax.swing.JPanel {
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         
-        Pattern nuPattern = new Pattern(this);
-        outputTA.setText(nuPattern.toString());
+        System.out.println("dgYes = " + dgYes);
+        Pattern nuPattern = new Pattern(this,dgYes);
+        
+        
+        drawingPattern = nuPattern;    
+
+        outputTA.setText(drawingPattern.toString());
+        
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
@@ -323,6 +342,13 @@ public class PPanel extends javax.swing.JPanel {
         clearTheOutputTA();
         repaint();
     }//GEN-LAST:event_clearButtonActionPerformed
+
+    private void yesCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yesCheckBoxActionPerformed
+        dgYes = Math.abs(dgYes-1);
+        
+        drawingPattern.setYes(dgYes);
+
+    }//GEN-LAST:event_yesCheckBoxActionPerformed
 
     public PatternList getPatterns() {
         return patterns;

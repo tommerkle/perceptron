@@ -16,24 +16,25 @@ public final class Pattern {
     int x;
 
     Pattern(String absolutepath) {
-        
+
         MyReader mr = new MyReader(absolutepath);
         while (mr.hasMoreData()) {
             list.add(mr.giveMeTheNextLine());
         }
-        
+
         mr.close();
         initDetectorsFromText();
         initTeaching();
     }
 
-    Pattern(PPanel p) {
-
+    Pattern(PPanel p, int yes) {
         panel = p;
+        this.yes = yes;
+       
         x = panel.getDrawingDim();
         initDetectorsFromDrawingPad();
         initList();
-        initTeaching();
+      
     }
 
     public StringList getList() {
@@ -48,6 +49,16 @@ public final class Pattern {
         String ret = "";
         for (String s : list) {
             ret += s + "\n";
+        }
+        
+        if (yes == 1) {
+            
+            ret += "yes";
+            
+        }
+        
+        if ( yes == 0) {
+            ret += "no";
         }
         return ret;
     }
@@ -70,10 +81,16 @@ public final class Pattern {
         return yes;
     }
 
+    void setYes(int x) {
+        
+        yes = x;
+         
+    }
+
     void initDetectorsFromText() {
         x = list.get(0).length();
         int[][] returnMe = new int[x][x];
-       
+
         int patternSize = x; // get the actual length / width of a pattern       
         for (int i = 0; i < patternSize; i++) {
             //panel.setTheTA("\t");
@@ -89,35 +106,30 @@ public final class Pattern {
             //System.out.println("\n");
         }
         // panel.setTheTA("\n\n\n")
-        
+
         matrix = returnMe;
-        
 
     }
 
     void initDetectorsFromDrawingPad() {
-        
-        
+
         int[][] returnMe = panel.getDrawingGrid();
-        
-        
-        
+
         matrix = returnMe;
     }
 
-    int[][] initDetectors() { 
+    int[][] initDetectors() {
         return matrix;
     }
 
     private void initList() {
-        for(int row = 0; row < x; row ++){
+        for (int row = 0; row < x; row++) {
             String ret = "";
-            for (int col = 0; col < x ; col++){
+            for (int col = 0; col < x; col++) {
                 ret += matrix[row][col];
             }
             list.add(ret);
         }
     }
-
 
 }
