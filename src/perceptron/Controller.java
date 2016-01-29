@@ -19,6 +19,7 @@ public class Controller extends Thread {
     private boolean DEBUGGING = true;
     Ptron tron;
     int delay = 30;
+    Pattern nuPattern;
 
     int patternX = 75, patternY = 100, weightsX = 75, weightsY = 350, boxSize = 10;
 
@@ -45,6 +46,7 @@ public class Controller extends Thread {
     void paint(Graphics g) {
         initPatternGrid(g);
         initWeightsGrid(g);
+
     }
 
     public void step() {
@@ -73,7 +75,8 @@ public class Controller extends Thread {
 
     void initPatternGrid(Graphics g) {
         int patternNo = thePanel.tron.getCurrentPattern();
-
+        g.setColor(Color.BLUE);
+        g.drawRect(patternX-1, patternY-1, (patternDim*boxSize)+2, (patternDim*boxSize)+2);
         for (int row = 0; row < patternDim; row++) {
             for (int col = 0; col < patternDim; col++) {
                 if (patterns.get(patternNo).getList().get(row).charAt(col) != '*') {
@@ -86,10 +89,9 @@ public class Controller extends Thread {
     }
 
     private void initWeightsGrid(Graphics g) {
-
         for (int row = 0; row < patternDim; row++) {
             for (int col = 0; col < patternDim; col++) {
-                int dist = Math.abs(tron.weights[row][col]);
+                
 
                 if (tron.weights[row][col] < 0) {
                     g.setColor(Color.RED);
@@ -105,6 +107,7 @@ public class Controller extends Thread {
             }
         }
     }
+
 
 
 

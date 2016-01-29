@@ -5,15 +5,16 @@
  */
 package perceptron;
 
+import java.awt.Color;
 import perceptron.io.MyWriter;
 import perceptron.io.MyReader;
-import java.awt.Color;
+
 import java.awt.FileDialog;
 import java.awt.Font;
+
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.io.File;
-import javax.swing.JTextArea;
 
 /**
  *
@@ -26,6 +27,14 @@ public class PPanel extends javax.swing.JPanel {
     Ptron tron;
     PFrame theFrame;
     Controller theController;
+    boolean drawings = false; // if there have been drawings added to a new PatternList
+    PatternList drawingList;
+    int dX = 395;
+    int dY = 330;
+    int dGridWidth = 320;
+    int drawingDim = 20;
+    int[][] drawingGrid;
+    int dgBoxWidth = 16;
 
     /**
      * Creates new form PPanel
@@ -38,6 +47,7 @@ public class PPanel extends javax.swing.JPanel {
     public PPanel(PFrame frame) {
         this();
         theFrame = frame;
+        drawingGrid = new int[drawingDim][drawingDim];
         initFile();
         initComboBox();
         theController = new Controller(this);
@@ -48,6 +58,8 @@ public class PPanel extends javax.swing.JPanel {
 
     public void paintComponent(Graphics g) {
         theController.paint(g);
+        paintDrawingPadBorder(g);
+        paintDrawingPad(g);
     }
 
     /**
@@ -77,14 +89,15 @@ public class PPanel extends javax.swing.JPanel {
         buttonGroup2 = new javax.swing.ButtonGroup();
         openButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        theTA = new javax.swing.JTextArea();
         runButton = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         outputTA = new javax.swing.JTextArea();
         loadButton = new javax.swing.JButton();
         patternComboBox = new javax.swing.JComboBox();
         weightsLabel = new javax.swing.JLabel();
+        addButton = new javax.swing.JButton();
+        yesCheckBox = new javax.swing.JCheckBox();
+        clearButton = new javax.swing.JButton();
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -114,6 +127,17 @@ public class PPanel extends javax.swing.JPanel {
         jMenu8.setText("Edit");
         jMenuBar4.add(jMenu8);
 
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                formMouseDragged(evt);
+            }
+        });
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                formMousePressed(evt);
+            }
+        });
+
         openButton.setText("Open");
         openButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -127,11 +151,6 @@ public class PPanel extends javax.swing.JPanel {
                 saveButtonActionPerformed(evt);
             }
         });
-
-        theTA.setEditable(false);
-        theTA.setColumns(20);
-        theTA.setRows(5);
-        jScrollPane2.setViewportView(theTA);
 
         runButton.setText("Ptron Run");
         runButton.addActionListener(new java.awt.event.ActionListener() {
@@ -161,6 +180,22 @@ public class PPanel extends javax.swing.JPanel {
         weightsLabel.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
         weightsLabel.setText("Weights");
 
+        addButton.setText("Add");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
+
+        yesCheckBox.setText("Yes");
+
+        clearButton.setText("Clear");
+        clearButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -173,8 +208,7 @@ public class PPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(125, 125, 125)
                         .addComponent(weightsLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(39, 39, 39))
             .addGroup(layout.createSequentialGroup()
                 .addGap(15, 15, 15)
@@ -190,6 +224,14 @@ public class PPanel extends javax.swing.JPanel {
                 .addGap(54, 54, 54)
                 .addComponent(patternComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(clearButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(addButton)
+                .addGap(38, 38, 38)
+                .addComponent(yesCheckBox)
+                .addGap(81, 81, 81))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -203,30 +245,33 @@ public class PPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 291, Short.MAX_VALUE)
+                        .addComponent(weightsLabel)
+                        .addGap(116, 116, 116))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(2, 2, 2)
                         .addComponent(patternComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(84, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(weightsLabel)
-                        .addGap(116, 116, 116))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(addButton)
+                            .addComponent(yesCheckBox)
+                            .addComponent(clearButton))
+                        .addGap(20, 20, 20))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
         MyReader mr = new MyReader();
         while (mr.hasMoreData()) {
-            theTA.append(mr.giveMeTheNextLine() + "\n");
+            setTheOutputTA(mr.giveMeTheNextLine() + "\n");
         }
         mr.close();
     }//GEN-LAST:event_openButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         MyWriter mw = new MyWriter();
-        mw.print(theTA.getText());
+        mw.print(outputTA.getText());
         mw.close();
     }//GEN-LAST:event_saveButtonActionPerformed
 
@@ -237,16 +282,47 @@ public class PPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_runButtonActionPerformed
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
-       initFile();
-       theController = new Controller(this);
-       initComboBox();
-       repaint();
+        initFile();
+        theController = new Controller(this);
+        initComboBox();
+        repaint();
     }//GEN-LAST:event_loadButtonActionPerformed
 
     private void patternComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_patternComboBoxActionPerformed
         tron.setCurrentPattern(patternComboBox.getSelectedIndex());
         theFrame.repaint();
     }//GEN-LAST:event_patternComboBoxActionPerformed
+
+    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        int x = evt.getX();
+        int y = evt.getY();
+        if (x > dX && x < dX + dGridWidth && y > dY && y < dY + dGridWidth) {
+            draw(x, y); // add a 1 to the (x,y)th cell of the drawing grid
+        }
+        repaint();
+    }//GEN-LAST:event_formMousePressed
+
+    private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
+        int x = evt.getX();
+        int y = evt.getY();
+        if (x > dX && x < dX + dGridWidth && y > dY && y < dY + dGridWidth) {
+            draw(x, y); // add a 1 to the (x,y)th cell of the drawing grid
+        }
+        repaint();
+
+    }//GEN-LAST:event_formMouseDragged
+
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        
+        Pattern nuPattern = new Pattern(this);
+        outputTA.setText(nuPattern.toString());
+    }//GEN-LAST:event_addButtonActionPerformed
+
+    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
+        drawingGrid = new int [drawingDim][drawingDim];
+        clearTheOutputTA();
+        repaint();
+    }//GEN-LAST:event_clearButtonActionPerformed
 
     public PatternList getPatterns() {
         return patterns;
@@ -262,10 +338,6 @@ public class PPanel extends javax.swing.JPanel {
 
     public void setTron(Ptron tron) {
         this.tron = tron;
-    }
-
-    public JTextArea getTheTA() {
-        return theTA;
     }
 
     public void inputData(File directory) { // adding all files from a directory to PatternList "patterns"
@@ -284,11 +356,6 @@ public class PPanel extends javax.swing.JPanel {
         }
     }
 
-    void spew(Pattern p) {
-        theTA.append(p.toString() + "\n");
-
-    }
-
     private String getDirectoryName() {
         System.setProperty("apple.awt.fileDialogForDirectories", "true"); // added so that when the FileDialog opens, you may select directories
         FileDialog fd = new FileDialog(new Frame(), "Select Input File");
@@ -305,8 +372,10 @@ public class PPanel extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addButton;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.JButton clearButton;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -320,7 +389,6 @@ public class PPanel extends javax.swing.JPanel {
     private javax.swing.JMenuBar jMenuBar3;
     private javax.swing.JMenuBar jMenuBar4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JButton loadButton;
@@ -329,19 +397,12 @@ public class PPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox patternComboBox;
     private javax.swing.JButton runButton;
     private javax.swing.JButton saveButton;
-    private javax.swing.JTextArea theTA;
     private javax.swing.JLabel weightsLabel;
+    private javax.swing.JCheckBox yesCheckBox;
     // End of variables declaration//GEN-END:variables
 
-    void setTheTA(String s) {
-        theTA.append(s);
-    }
-
-    void setTACarat(int i) {
-        theTA.setCaretPosition(i);
-    }
-
     void setTheOutputTA(String s) {
+        
         outputTA.append(s);
     }
 
@@ -349,28 +410,16 @@ public class PPanel extends javax.swing.JPanel {
         outputTA.setCaretPosition(i);
     }
 
-    void setTAFont(Font font) {
-        theTA.setFont(font);
-    }
-
-    void setTAFontColor(Color c) {
-        theTA.setForeground(c);
-    }
-
-    void clearTheTA() {
-        theTA.setText("");
-    }
-
     void step() {
         theFrame.repaint();
     }
 
     private void initFile() {
-        theTA.setText("");
+
         outputTA.setText(""); // Clear the TAs before every time a file is echoed into the TA
         try {
             File file = new File(getDirectoryName());
-            if(!file.canExecute()){
+            if (!file.canExecute()) {
                 System.exit(0);
             }
             System.out.println("file = " + file.canExecute());
@@ -386,11 +435,67 @@ public class PPanel extends javax.swing.JPanel {
     private void initComboBox() {
         int count = 1;
         patternComboBox.removeAllItems();
-        for(Pattern p: patterns){
-           patternComboBox.addItem("Pattern " + count);
-           count++;
+        for (Pattern p : patterns) {
+            patternComboBox.addItem("Pattern " + count);
+            count++;
         }
-        
+
+    }
+
+    void clearTheOutputTA() {
+        outputTA.setText("");
+    }
+
+    void setOutputTAFont(Font font) {
+        outputTA.setFont(font);
+    }
+
+    boolean hasDrawing() {
+        return drawings;
+    }
+
+    StringList getDrawingStringList() {
+        StringList returnMe = new StringList();
+
+        //////// scan drawing pad and get
+        return returnMe;
+    }
+
+    int getDrawingDim() {
+        return drawingDim;
+    }
+
+    private void paintDrawingPadBorder(Graphics g) {
+        g.setColor(Color.BLUE);
+        g.drawRect(dX - 1, dY - 1, 320 + 1, 320 + 1);
+        g.setColor(Color.WHITE);
+    }
+
+    private void paintDrawingPad(Graphics g) {
+
+        for (int row = 0; row < drawingDim; row++) {
+            for (int col = 0; col < drawingDim; col++) {
+                g.setColor(Color.WHITE);
+                if (drawingGrid[row][col] == 1) {
+                    g.setColor(Color.BLACK);
+                }
+                g.fillRect(dX + col * dgBoxWidth, dY + row * dgBoxWidth, dgBoxWidth, dgBoxWidth);
+
+            }
+        }
+    }
+
+    private void draw(int x, int y) {
+
+        int col = (x - dX) / dgBoxWidth;
+
+        int row = (y - dY) / dgBoxWidth;
+
+        drawingGrid[row][col] = 1;
+    }
+
+    int[][] getDrawingGrid() {
+        return drawingGrid;
     }
 
 }
