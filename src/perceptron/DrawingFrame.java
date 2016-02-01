@@ -1,27 +1,26 @@
-
 package perceptron;
+
+import static java.awt.image.ImageObserver.WIDTH;
 
 /**
  *
  * @author Tom
  */
-public class PFrame extends javax.swing.JFrame {
+public class DrawingFrame extends javax.swing.JFrame {
 
-    public PPanel getPanel() {
-        return panel;
+    /**
+     * Creates new form DrawingFrame
+     */
+    public DrawingFrame() {
+        initComponents();
     }
 
-    PPanel panel;
-    /**
-     * Creates new form PFrame
-     */
-    public PFrame() {
-        initComponents();
-        panel = new PPanel(this);
-        setSize(800,800);
-        add(panel);
-        new DrawingFrame(this);
-        this.setLocation(50, WIDTH);
+    public DrawingFrame(PFrame frame) {
+        this();
+        setSize(350, 400);
+        add(new DrawingPanel(frame));
+        
+        this.setLocation(900, WIDTH + 100);
         setVisible(true);
     }
 
@@ -56,20 +55,20 @@ public class PFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DrawingFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DrawingFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DrawingFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DrawingFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PFrame().setVisible(true);
+                new DrawingFrame().setVisible(true);
             }
         });
     }

@@ -3,7 +3,6 @@ package perceptron;
 import java.awt.Font;
 import java.util.ArrayList;
 
-
 /**
  *
  * @author Tom
@@ -25,6 +24,7 @@ public class Ptron {
     int patternNo = 0; // Number of the pattern we are currently looping through 0 to 29 i.e. 30 patterns
     int[][] selectedPatternWeights;
     ArrayList<Integer> wrongList;
+    boolean hasRun = false;
 
     Ptron() {
 
@@ -43,6 +43,7 @@ public class Ptron {
     }
 
     void run() {
+        hasRun = true;
         int count = 0;
         int right;
         int wrong;
@@ -50,38 +51,38 @@ public class Ptron {
             right = 0;
             wrong = 0;
             wrongList = new ArrayList<>();
-            count ++;
+            count++;
             errors = false;
             pTronOutput.clear();
 
             for (int i = 0; i < patterns.size(); i++) { // for each pattern
                 initDetectors(patterns.get(i));
-                
+
                 int output = categorize(patterns.get(i));
 
                 if (output != patterns.get(i).getYes()) {
-                    wrong ++;
-                    wrongList.add(i+1);
+                    wrong++;
+                    wrongList.add(i + 1);
                     errors = true;
                     learn(patterns.get(i), output);
 
-                } else{
-                    right ++;
+                } else {
+                    right++;
                 }
-                
+
                 pTronOutput.add(output);
                 //displayPattern(patterns.get(i));
 
                 //new PauseDialog();
             }
             System.out.println("Run through " + count + " has identified: " + right + " correct, and " + wrong + " incorrect");
-            System.out.println("Incorrectly identified patterns: " + wrongList );
+            System.out.println("Incorrectly identified patterns: " + wrongList);
             panel.setTheOutputTA("\n\nRun through " + count + " has identified: " + right + " correct, and " + wrong + " incorrect");
-            panel.setTheOutputTA("\nIncorrectly identified patterns: " + wrongList );
+            panel.setTheOutputTA("\nIncorrectly identified patterns: " + wrongList);
         }
         System.out.println("----------------------------------------");
         panel.setTheOutputTA("\n\n----------------------------------------");
-        
+
         System.out.println("FINISHED");
         panel.setTheOutputTA("\n\nFINISHED");
 
@@ -97,28 +98,49 @@ public class Ptron {
     }
 
     private void initDetectors(Pattern p) {
-        
+
         detectors = p.initDetectors();
-        
 
         // panel.setTheTA("\n\n\n");
-
     }
 
-    private int categorize(Pattern p) {
+    int categorize(Pattern p) {
         System.out.println("x = " + x);
         int sum = 0;
         int output;
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < x; j++) {
-                
-                
+
                 sum += detectors[i][j] * weights[i][j];
                 //System.out.println("sum = " + sum);
-                
+
             }
         }
         if (sum > threshold) {
+            System.out.println("sum= " + sum);
+            output = 1;
+            //System.out.println("YES");
+        } else {
+            output = 0;
+            //System.out.println("NO");
+        }
+        return output;
+    }
+
+    int categorize(Pattern p, int[][] detectors) {
+        System.out.println("x = " + x);
+        int sum = 0;
+        int output;
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < x; j++) {
+
+                sum += detectors[i][j] * weights[i][j];
+                //System.out.println("sum = " + sum);
+
+            }
+        }
+        if (sum > threshold) {
+            System.out.println("sum= " + sum);
             output = 1;
             //System.out.println("YES");
         } else {
@@ -214,10 +236,9 @@ public class Ptron {
     public Integer getCurrentPattern() {
         return patternNo;
     }
-    
-    void setCurrentPattern(int x){
+
+    void setCurrentPattern(int x) {
         patternNo = x;
     }
-
 
 }

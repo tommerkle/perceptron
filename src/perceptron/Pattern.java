@@ -13,6 +13,7 @@ public final class Pattern {
     int yes;
     int[][] matrix;
     PPanel panel;
+    DrawingPanel dPanel;
     int x;
 
     Pattern(String absolutepath) {
@@ -30,11 +31,21 @@ public final class Pattern {
     Pattern(PPanel p, int yes) {
         panel = p;
         this.yes = yes;
-       
+
         x = panel.getDrawingDim();
         initDetectorsFromDrawingPad();
         initList();
-      
+
+    }
+
+    Pattern(DrawingPanel p, int yes) {
+        dPanel = p;
+        this.yes = yes;
+
+        x = dPanel.getDrawingDim();
+        DinitDetectorsFromDrawingPad();
+        initList();
+
     }
 
     public StringList getList() {
@@ -50,14 +61,14 @@ public final class Pattern {
         for (String s : list) {
             ret += s + "\n";
         }
-        
+
         if (yes == 1) {
-            
+
             ret += "yes";
-            
+
         }
-        
-        if ( yes == 0) {
+
+        if (yes == 0) {
             ret += "no";
         }
         return ret;
@@ -82,9 +93,9 @@ public final class Pattern {
     }
 
     void setYes(int x) {
-        
+
         yes = x;
-         
+
     }
 
     void initDetectorsFromText() {
@@ -114,6 +125,12 @@ public final class Pattern {
     void initDetectorsFromDrawingPad() {
 
         int[][] returnMe = panel.getDrawingGrid();
+
+        matrix = returnMe;
+    }
+        void DinitDetectorsFromDrawingPad() {
+
+        int[][] returnMe = dPanel.getDrawingGrid();
 
         matrix = returnMe;
     }
